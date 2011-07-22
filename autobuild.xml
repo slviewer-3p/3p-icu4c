@@ -35,6 +35,12 @@
               <string>default</string>
             </map>
           </map>
+          <key>manifest</key>
+          <array>
+            <string>LICENSES/icu.txt</string>
+            <string>LICENSES/unicode-license.txt</string>
+            <string>include/icu/*</string>
+          </array>
           <key>name</key>
           <string>common</string>
         </map>
@@ -55,6 +61,13 @@
               <string>default</string>
             </map>
           </map>
+          <key>manifest</key>
+          <array>
+            <string>lib/release/*.a</string>
+            <string>bin/*</string>
+            <string>sbin/*</string>
+            <string>share/*</string>
+          </array>
           <key>name</key>
           <string>linux</string>
         </map>

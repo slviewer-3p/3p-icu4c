@@ -54,7 +54,7 @@ pushd "$ICU4C_SOURCE_DIR"
         "linux")
 			pushd "source"
 				chmod +x runConfigureICU configure install-sh
-				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage"
+				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage" --enable-shared=no --enable-static=yes
 				make
 				make install
 				mkdir -p "$stage/include/icu"
