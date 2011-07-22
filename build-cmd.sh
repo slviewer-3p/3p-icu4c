@@ -8,7 +8,7 @@ set -x
 set -e
 
 ICU4C_VERSION="4.8.1"
-ICU4C_VERSION="zlib-$ICU4C_VERSION"
+ICU4C_VERSION="icu"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
@@ -52,19 +52,24 @@ pushd "$ICU4C_SOURCE_DIR"
 			#mv "$stage/include/"*.h "$stage/include/zlib/"
         ;;
         "linux")
-            #CFLAGS="-m32" CXXFLAGS="-m32" ./configure --prefix="$stage"
-            #make
-            #make install
-            #mkdir -p "$stage/include/zlib"
-            #mv "$stage/include/"*.h "$stage/include/zlib/"
-			#
-            #mv "$stage/lib" "$stage/release"
-            #mkdir -p "$stage/lib"
-            #mv "$stage/release" "$stage/lib"
+			pushd "source"
+				chmod +x runConfigureICU configure install-sh
+				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage"
+				make
+				make install
+				mkdir -p "$stage/include/icu"
+				mv "$stage/include/layout" "$stage/include/icu/"
+				mv "$stage/include/unicode" "$stage/include/icu/"
+
+				mv "$stage/lib" "$stage/release"
+				mkdir -p "$stage/lib"
+				mv "$stage/release" "$stage/lib"
+			popd
         ;;
     esac
-    #mkdir -p "$stage/LICENSES"
-    #tail -n 31 README > "$stage/LICENSES/zlib.txt"
+    mkdir -p "$stage/LICENSES"
+	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/LICENSES/icu.txt"
+	cp unicode-license.txt "$stage/LICENSES/"
 popd
 
 pass
