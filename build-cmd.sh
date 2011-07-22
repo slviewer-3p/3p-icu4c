@@ -8,7 +8,7 @@ set -x
 set -e
 
 ICU4C_VERSION="4.8.1"
-ICU4C_VERSION="icu"
+ICU4C_SOURCE_DIR="icu"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
