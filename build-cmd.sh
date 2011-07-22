@@ -54,22 +54,15 @@ pushd "$ICU4C_SOURCE_DIR"
         "linux")
 			pushd "source"
 				chmod +x runConfigureICU configure install-sh
-				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage" --enable-shared=no --enable-static=yes
+				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage/icu" --enable-shared=no --enable-static=yes
 				make
 				make install
-				mkdir -p "$stage/include/icu"
-				mv "$stage/include/layout" "$stage/include/icu/"
-				mv "$stage/include/unicode" "$stage/include/icu/"
-
-				mv "$stage/lib" "$stage/release"
-				mkdir -p "$stage/lib"
-				mv "$stage/release" "$stage/lib"
 			popd
         ;;
     esac
-    mkdir -p "$stage/LICENSES"
-	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/LICENSES/icu.txt"
-	cp unicode-license.txt "$stage/LICENSES/"
+    mkdir -p "$stage/icu/LICENSES"
+	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/icu/LICENSES/icu.txt"
+	cp unicode-license.txt "$stage/icu/LICENSES/"
 popd
 
 pass

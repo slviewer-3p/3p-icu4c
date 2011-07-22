@@ -10,7 +10,7 @@
       <key>license</key>
       <string>ICU, permissive non-copyleft free software license</string>
       <key>license_file</key>
-      <string>LICENSES/icu.txt</string>
+	  <string>icu/LICENSES/icu.txt</string>
       <key>name</key>
       <string>icu4c</string>
       <key>platforms</key>
@@ -35,12 +35,6 @@
               <string>default</string>
             </map>
           </map>
-          <key>manifest</key>
-          <array>
-            <string>LICENSES/icu.txt</string>
-            <string>LICENSES/unicode-license.txt</string>
-            <string>include/icu/*</string>
-          </array>
           <key>name</key>
           <string>common</string>
         </map>
@@ -63,10 +57,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/release/*.a</string>
-            <string>bin/*</string>
-            <string>sbin/*</string>
-            <string>share/*</string>
+            <string>icu</string>
           </array>
           <key>name</key>
           <string>linux</string>
