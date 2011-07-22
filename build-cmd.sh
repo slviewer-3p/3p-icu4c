@@ -7,7 +7,7 @@ set -x
 # make errors fatal
 set -e
 
-ICU4C_VERSION="4.8.1"
+ICU4C_VERSION="48.1"
 ICU4C_SOURCE_DIR="icu"
 
 if [ -z "$AUTOBUILD" ] ; then 
