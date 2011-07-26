@@ -54,7 +54,7 @@ pushd "$ICU4C_SOURCE_DIR"
         "linux")
 			pushd "source"
 				chmod +x runConfigureICU configure install-sh
-				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage/icu" --enable-shared=no --enable-static=yes
+				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage/icu" --enable-shared=no --enable-static=yes --disable-dyload
 				make
 				make install
 			popd
