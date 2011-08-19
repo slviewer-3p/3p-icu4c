@@ -10,7 +10,7 @@
       <key>license</key>
       <string>ICU, permissive non-copyleft free software license</string>
       <key>license_file</key>
-      <string>icu/LICENSES/icu.txt</string>
+      <string>LICENSES/icu.txt</string>
       <key>name</key>
       <string>icu4c</string>
       <key>platforms</key>
