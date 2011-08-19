@@ -60,9 +60,9 @@ pushd "$ICU4C_SOURCE_DIR"
 			popd
         ;;
     esac
-    mkdir -p "$stage/icu/LICENSES"
-	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/icu/LICENSES/icu.txt"
-	cp unicode-license.txt "$stage/icu/LICENSES/"
+    mkdir -p "$stage/LICENSES"
+	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/LICENSES/icu.txt"
+	cp unicode-license.txt "$stage/LICENSES/"
 popd
 
 pass

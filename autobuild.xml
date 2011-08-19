@@ -35,6 +35,11 @@
               <string>default</string>
             </map>
           </map>
+          <key>manifest</key>
+          <array>
+            <string>LICENSES/icu.txt</string>
+            <string>LICENSES/unicode-license.txt</string>
+          </array>
           <key>name</key>
           <string>common</string>
         </map>
