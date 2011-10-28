@@ -39,6 +39,7 @@
           <array>
             <string>LICENSES/icu.txt</string>
             <string>LICENSES/unicode-license.txt</string>
+            <string>LICENCES</string>
           </array>
           <key>name</key>
           <string>common</string>
@@ -62,7 +63,8 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>icu</string>
+            <string>lib</string>
+            <string>include</string>
           </array>
           <key>name</key>
           <string>linux</string>

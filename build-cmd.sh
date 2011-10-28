@@ -28,36 +28,29 @@ pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
             #load_vsvars
-            #
-            #pushd contrib/masmx86
-            #    ./bld_ml32.bat
-            #popd
-            # 
-            #build_sln "contrib/vstudio/vc10/zlibvc.sln" "Debug|Win32" "zlibstat"
-            #build_sln "contrib/vstudio/vc10/zlibvc.sln" "Release|Win32" "zlibstat"
-            #mkdir -p "$stage/lib/debug"
-            #mkdir -p "$stage/lib/release"
-            #cp "contrib/vstudio/vc10/x86/ZlibStatDebug/zlibstat.lib" \
-            #    "$stage/lib/debug/zlibd.lib"
-            #cp "contrib/vstudio/vc10/x86/ZlibStatRelease/zlibstat.lib" \
-            #    "$stage/lib/release/zlib.lib"
-            #mkdir -p "$stage/include/zlib"
-            #cp {zlib.h,zconf.h} "$stage/include/zlib"
         ;;
         "darwin")
             #./configure --prefix="$stage"
-            #make
-            #make install
-			#mkdir -p "$stage/include/zlib"
-			#mv "$stage/include/"*.h "$stage/include/zlib/"
         ;;
         "linux")
-			pushd "source"
-				chmod +x runConfigureICU configure install-sh
-				CFLAGS="-m32" CXXFLAGS="-m32" ./runConfigureICU Linux --prefix="$stage/icu" --enable-shared=no --enable-static=yes --disable-dyload
-				make
-				make install
-			popd
+            pushd "source"
+                export CFLAGS="-m32"
+                export CXXFLAGS=$CFLAGS
+                common_options="--prefix="$stage" --enable-shared=yes \
+                    --enable-static=yes --disable-dyload --enable-extras=no \
+                    --enable-layout=no --enable-samples=no --enable-icuio=no \
+                    --enable-tests=no"
+                mkdir -p $stage
+                chmod +x runConfigureICU configure install-sh
+                ./runConfigureICU Linux $common_options --libdir=$stage/lib/release
+                make
+                make install
+                ./runConfigureICU Linux $common_options --libdir=$stage/lib/debug \
+                    --prefix="$stage" --enable-shared=yes --enable-static=yes \
+                    --enable-debug=yes --enable-release=no
+                make
+                make install
+            popd
         ;;
     esac
     mkdir -p "$stage/LICENSES"
