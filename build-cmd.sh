@@ -23,7 +23,7 @@ set +x
 eval "$("$AUTOBUILD" source_environment)"
 set -x
 
-stage="$(pwd)/stage"
+stage=$(pwd)/stage
 pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
@@ -36,20 +36,22 @@ pushd "$ICU4C_SOURCE_DIR"
             pushd "source"
                 export CFLAGS="-m32"
                 export CXXFLAGS=$CFLAGS
-                common_options="--prefix="$stage" --enable-shared=yes \
+                export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
-                    --enable-layout=no --enable-samples=no --enable-icuio=no \
-                    --enable-tests=no"
+                    --enable-samples=no --enable-tests=no --enable-layout=no" 
                 mkdir -p $stage
                 chmod +x runConfigureICU configure install-sh
-                ./runConfigureICU Linux $common_options --libdir=$stage/lib/release
-                make
+                # HACK: Break format layout so boost can find the library.
+#                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/release
+                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/
+                
+                make -j2
                 make install
-                ./runConfigureICU Linux $common_options --libdir=$stage/lib/debug \
-                    --prefix="$stage" --enable-shared=yes --enable-static=yes \
-                    --enable-debug=yes --enable-release=no
-                make
-                make install
+                # Disable debug build until we can build boost with our standard layout.
+#                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/debug \
+#                    --enable-debug=yes --enable-release=no 
+#                make -j2
+#                make install
             popd
         ;;
     esac

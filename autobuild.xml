@@ -63,8 +63,10 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib</string>
             <string>include</string>
+            <string>lib/*.a</string>
+            <string>lib/release/*.a</string>
+            <string>lib/debug/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
