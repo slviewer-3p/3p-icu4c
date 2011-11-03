@@ -1,6 +1,6 @@
 # Use Public Upload Locations
 public_build = false
-build_CYGWIN = false
+build_CYGWIN = true
 build_Darwin = false
 
 # autobuild uses VS2010
