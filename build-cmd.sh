@@ -18,7 +18,7 @@ if [ "$OSTYPE" = "cygwin" ] ; then
     export AUTOBUILD="$(cygpath -u $AUTOBUILD)"
 fi
 
-# load autbuild provided shell functions and variables
+# load autobuild provided shell functions and variables
 set +x
 eval "$("$AUTOBUILD" source_environment)"
 set -x
@@ -35,17 +35,20 @@ pushd "$ICU4C_SOURCE_DIR"
             
             pushd ../icu/source
                 build_sln "allinone\allinone.sln" "Release|Win32"
-                build_sln "allinone\allinone.sln" "Debug|Win32"
+#                build_sln "allinone\allinone.sln" "Debug|Win32"
             popd
-                       
-            mkdir -p "$stage/lib/debug"
-            mkdir -p "$stage/lib/release"
+            
+            mkdir -p "$stage/lib"           
+#            mkdir -p "$stage/lib/debug"
+#            mkdir -p "$stage/lib/release"
             mkdir -p "$stage/include"
+
+			pwd
             
             # Copy the .lib files that don't have a "d" on the end to release
-            find ./lib -regex '\./icu.*[^d]\.lib' -exec cp {} $stage/lib/release \;
+            find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
             # Copy the .lib files and .pdb files ending in "d" to debug
-            find ./lib -regex '\./icu.*d\.{lib,pdb}' -exec cp {} $stage/lib/debug \;
+#            find ./lib -regex '.*/icu.*d\.{lib,pdb}' -exec cp {} $stage/lib/debug \;
             
             cp -R include/* "$stage/include"
     
