@@ -35,7 +35,7 @@ pushd "$ICU4C_SOURCE_DIR"
             
             pushd ../icu/source
                 build_sln "allinone\allinone.sln" "Release|Win32"
-#                build_sln "allinone\allinone.sln" "Debug|Win32"
+                build_sln "allinone\allinone.sln" "Debug|Win32"
             popd
             
             mkdir -p "$stage/lib"           
@@ -45,10 +45,20 @@ pushd "$ICU4C_SOURCE_DIR"
 
 			pwd
             
+            
+            # Break package layout convention until we have a way of finding 
+            # ICU in the lib/release and lib/debug directories.
+            
             # Copy the .lib files that don't have a "d" on the end to release
+#            find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/release \;
             find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
             # Copy the .lib files and .pdb files ending in "d" to debug
-#            find ./lib -regex '.*/icu.*d\.{lib,pdb}' -exec cp {} $stage/lib/debug \;
+#            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/debug/ \;
+#            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/debug/ \;
+
+            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/ \;
+            find ./lib -regex '.*/icu.*d\.pdb' -exec cp {} $stage/lib/ \;
+
             
             cp -R include/* "$stage/include"
     
