@@ -68,6 +68,8 @@ pushd "$ICU4C_SOURCE_DIR"
         ;;
         "linux")
             pushd "source"
+		export CC="gcc-4.1"
+		export CXX="g++-4.1"
                 export CFLAGS="-m32"
                 export CXXFLAGS=$CFLAGS
                 export common_options="--prefix=${stage} --enable-shared=no \

@@ -224,8 +224,12 @@ case $platform in
     Linux*)
         THE_OS="Linux"
         THE_COMP="the GNU C++"
-        CC=gcc; export CC
-        CXX=g++; export CXX
+	if [[ -z CC ]] ; then
+	    CC=gcc; export CC
+	fi
+	if [[ -z CXX ]] ; then
+            CXX=g++; export CXX
+	fi
         DEBUG_CFLAGS='-g -O0'
         DEBUG_CXFLAGS='-g -O0'
         ;;
