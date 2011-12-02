@@ -64,7 +64,26 @@ pushd "$ICU4C_SOURCE_DIR"
     
         ;;
         "darwin")
-            #./configure --prefix="$stage"
+            pushd "source"
+                export CFLAGS="-m32 -DU_CHARSET_IS_UTF8=1"
+                export CXXFLAGS=$CFLAGS
+                export common_options="--prefix=${stage} --enable-shared=no \
+                    --enable-static=yes --disable-dyload --enable-extras=no \
+                    --enable-samples=no --enable-tests=no --enable-layout=no" 
+                mkdir -p $stage
+                chmod +x runConfigureICU configure install-sh
+                # HACK: Break format layout so boost can find the library.
+#                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/release
+                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/
+                
+                make -j2
+                make install
+                # Disable debug build until we can build boost with our standard layout.
+#                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/debug \
+#                    --enable-debug=yes --enable-release=no 
+#                make -j2
+#                make install
+            popd
         ;;
         "linux")
             pushd "source"
