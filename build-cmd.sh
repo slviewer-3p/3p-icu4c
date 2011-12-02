@@ -43,9 +43,6 @@ pushd "$ICU4C_SOURCE_DIR"
 #            mkdir -p "$stage/lib/release"
             mkdir -p "$stage/include"
 
-			pwd
-            
-            
             # Break package layout convention until we have a way of finding 
             # ICU in the lib/release and lib/debug directories.
             
@@ -65,8 +62,10 @@ pushd "$ICU4C_SOURCE_DIR"
         ;;
         "darwin")
             pushd "source"
-                export CFLAGS="-m32 -DU_CHARSET_IS_UTF8=1"
-                export CXXFLAGS=$CFLAGS
+		opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -DU_CHARSET_IS_UTF8=1'
+           	export CFLAGS="$opts"
+            	export CXXFLAGS="$opts"
+            	export LDFLAGS="$opts"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
                     --enable-samples=no --enable-tests=no --enable-layout=no" 
