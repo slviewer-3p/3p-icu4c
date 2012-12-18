@@ -1,5 +1,5 @@
 # Use Public Upload Locations
-public_build = false
+public_build = true
 build_CYGWIN = true
 build_Darwin = true
 
