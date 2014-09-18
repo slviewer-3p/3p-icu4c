@@ -1,14 +1,16 @@
 #!/bin/bash
 
 cd "$(dirname "$0")"
+top="$(pwd)"
 
 # turn on verbose debugging output for parabuild logs.
 set -x
 # make errors fatal
 set -e
 
-ICU4C_VERSION="48.1"
 ICU4C_SOURCE_DIR="icu"
+VERSION_HEADER_FILE="$ICU4C_SOURCE_DIR/source/common/unicode/uvernum.h"
+VERSION_MACRO="U_ICU_VERSION"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
@@ -62,10 +64,10 @@ pushd "$ICU4C_SOURCE_DIR"
         ;;
         "darwin")
             pushd "source"
-		opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -DU_CHARSET_IS_UTF8=1'
-           	export CFLAGS="$opts"
-            	export CXXFLAGS="$opts"
-            	export LDFLAGS="$opts"
+                opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -DU_CHARSET_IS_UTF8=1'
+                export CFLAGS="$opts"
+                export CXXFLAGS="$opts"
+                export LDFLAGS="$opts"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
                     --enable-samples=no --enable-tests=no --enable-layout=no" 
@@ -83,11 +85,18 @@ pushd "$ICU4C_SOURCE_DIR"
 #                make -j2
 #                make install
             popd
+
+            # populate version_file
+            cc -DVERSION_HEADER_FILE="\"$VERSION_HEADER_FILE\"" \
+               -DVERSION_MACRO="$VERSION_MACRO" \
+               -o "$stage/version" "$top/version.c"
+            "$stage/version" > "$stage/version.txt"
+            rm "$stage/version"
         ;;
         "linux")
             pushd "source"
-		export CC="gcc-4.1"
-		export CXX="g++-4.1"
+                export CC="gcc-4.1"
+                export CXX="g++-4.1"
                 export CFLAGS="-m32"
                 export CXXFLAGS=$CFLAGS
                 export common_options="--prefix=${stage} --enable-shared=no \
@@ -115,4 +124,3 @@ pushd "$ICU4C_SOURCE_DIR"
 popd
 
 pass
-
