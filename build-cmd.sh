@@ -95,8 +95,8 @@ pushd "$ICU4C_SOURCE_DIR"
         ;;
         "linux")
             pushd "source"
-                export CC="gcc-4.1"
-                export CXX="g++-4.1"
+                ## export CC="gcc-4.1"
+                ## export CXX="g++-4.1"
                 export CFLAGS="-m32"
                 export CXXFLAGS=$CFLAGS
                 export common_options="--prefix=${stage} --enable-shared=no \
@@ -116,6 +116,13 @@ pushd "$ICU4C_SOURCE_DIR"
 #                make -j2
 #                make install
             popd
+
+            # populate version_file
+            cc -DVERSION_HEADER_FILE="\"$VERSION_HEADER_FILE\"" \
+               -DVERSION_MACRO="$VERSION_MACRO" \
+               -o "$stage/version" "$top/version.c"
+            "$stage/version" > "$stage/version.txt"
+            rm "$stage/version"
         ;;
     esac
     mkdir -p "$stage/LICENSES"
