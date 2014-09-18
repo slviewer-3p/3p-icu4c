@@ -60,6 +60,15 @@ pushd "$ICU4C_SOURCE_DIR"
 
             
             cp -R include/* "$stage/include"
+
+            # populate version_file
+            cl /DVERSION_HEADER_FILE="\"$VERSION_HEADER_FILE\"" \
+               /DVERSION_MACRO="$VERSION_MACRO" \
+               /Fo"$(cygpath -w "$stage/version.obj")" \
+               /Fe"$(cygpath -w "$stage/version.exe")" \
+               "$(cygpath -w "$top/version.c")"
+            "$stage/version.exe" > "$stage/version.txt"
+            rm "$stage"/version.{obj,exe}
     
         ;;
         "darwin")
