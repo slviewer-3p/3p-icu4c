@@ -12,7 +12,7 @@ ICU4C_SOURCE_DIR="icu"
 VERSION_HEADER_FILE="$ICU4C_SOURCE_DIR/source/common/unicode/uvernum.h"
 VERSION_MACRO="U_ICU_VERSION"
 
-if [ -z "$AUTOBUILD" ] ; then 
+if [ -z "$AUTOBUILD" ] ; then
     fail
 fi
 
@@ -30,24 +30,24 @@ pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
             load_vsvars
-            
-            # According to the icu build instructions for Windows, 
+
+            # According to the icu build instructions for Windows,
             # runConfigureICU doesn't work for the Microsoft build tools, so
             # just use the provided .sln file.
-            
+
             pushd ../icu/source
                 build_sln "allinone\allinone.sln" "Release|Win32"
                 build_sln "allinone\allinone.sln" "Debug|Win32"
             popd
-            
-            mkdir -p "$stage/lib"           
+
+            mkdir -p "$stage/lib"
 #            mkdir -p "$stage/lib/debug"
 #            mkdir -p "$stage/lib/release"
             mkdir -p "$stage/include"
 
-            # Break package layout convention until we have a way of finding 
+            # Break package layout convention until we have a way of finding
             # ICU in the lib/release and lib/debug directories.
-            
+
             # Copy the .lib files that don't have a "d" on the end to release
 #            find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/release \;
             find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
@@ -58,7 +58,7 @@ pushd "$ICU4C_SOURCE_DIR"
             find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/ \;
             find ./lib -regex '.*/icu.*d\.pdb' -exec cp {} $stage/lib/ \;
 
-            
+
             cp -R include/* "$stage/include"
 
             # populate version_file
@@ -69,28 +69,30 @@ pushd "$ICU4C_SOURCE_DIR"
                "$(cygpath -w "$top/version.c")"
             "$stage/version.exe" > "$stage/version.txt"
             rm "$stage"/version.{obj,exe}
-    
+
         ;;
         "darwin")
             pushd "source"
-                opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -DU_CHARSET_IS_UTF8=1'
+
+                sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
+                opts='-arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.7 -DU_CHARSET_IS_UTF8=1'
                 export CFLAGS="$opts"
                 export CXXFLAGS="$opts"
                 export LDFLAGS="$opts"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
-                    --enable-samples=no --enable-tests=no --enable-layout=no" 
+                    --enable-samples=no --enable-tests=no --enable-layout=no"
                 mkdir -p $stage
                 chmod +x runConfigureICU configure install-sh
                 # HACK: Break format layout so boost can find the library.
 #                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/release
                 ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/
-                
+
                 make -j2
                 make install
                 # Disable debug build until we can build boost with our standard layout.
 #                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/debug \
-#                    --enable-debug=yes --enable-release=no 
+#                    --enable-debug=yes --enable-release=no
 #                make -j2
 #                make install
             popd
@@ -110,18 +112,18 @@ pushd "$ICU4C_SOURCE_DIR"
                 export CXXFLAGS=$CFLAGS
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
-                    --enable-samples=no --enable-tests=no --enable-layout=no" 
+                    --enable-samples=no --enable-tests=no --enable-layout=no"
                 mkdir -p $stage
                 chmod +x runConfigureICU configure install-sh
                 # HACK: Break format layout so boost can find the library.
 #                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/release
                 ./runConfigureICU Linux $common_options --libdir=${stage}/lib/
-                
+
                 make -j2
                 make install
                 # Disable debug build until we can build boost with our standard layout.
 #                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/debug \
-#                    --enable-debug=yes --enable-release=no 
+#                    --enable-debug=yes --enable-release=no
 #                make -j2
 #                make install
             popd
