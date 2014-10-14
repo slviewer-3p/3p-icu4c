@@ -21,6 +21,7 @@ if [ "$OSTYPE" = "cygwin" ] ; then
 fi
 
 # load autobuild provided shell functions and variables
+export AUTOBUILD_VSVER="${AUTOBUILD_VSVER:-120}"
 set +x
 eval "$("$AUTOBUILD" source_environment)"
 set -x
