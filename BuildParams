@@ -3,5 +3,5 @@ public_build = true
 build_CYGWIN = true
 build_Darwin = true
 
-# autobuild uses VS2010
-AUTOBUILD_VSVER=100
+# autobuild uses VS2013
+AUTOBUILD_VSVER=120
