@@ -39,7 +39,6 @@
           <array>
             <string>LICENSES/icu.txt</string>
             <string>LICENSES/unicode-license.txt</string>
-            <string>LICENCES</string>
             <string>include</string>
           </array>
           <key>name</key>
