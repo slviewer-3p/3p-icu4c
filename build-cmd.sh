@@ -41,19 +41,14 @@ pushd "$ICU4C_SOURCE_DIR"
             popd
 
             mkdir -p "$stage/lib"
-#            mkdir -p "$stage/lib/debug"
-#            mkdir -p "$stage/lib/release"
             mkdir -p "$stage/include"
 
             # Break package layout convention until we have a way of finding
             # ICU in the lib/release and lib/debug directories.
 
             # Copy the .lib files that don't have a "d" on the end to release
-#            find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/release \;
             find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
             # Copy the .lib files and .pdb files ending in "d" to debug
-#            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/debug/ \;
-#            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/debug/ \;
 
             find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/ \;
             find ./lib -regex '.*/icu.*d\.pdb' -exec cp {} $stage/lib/ \;
@@ -85,16 +80,10 @@ pushd "$ICU4C_SOURCE_DIR"
                 mkdir -p $stage
                 chmod +x runConfigureICU configure install-sh
                 # HACK: Break format layout so boost can find the library.
-#                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/release
                 ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/
 
                 make -j2
                 make install
-                # Disable debug build until we can build boost with our standard layout.
-#                ./runConfigureICU MacOSX $common_options --libdir=${stage}/lib/debug \
-#                    --enable-debug=yes --enable-release=no
-#                make -j2
-#                make install
             popd
 
             # populate version_file
@@ -116,16 +105,10 @@ pushd "$ICU4C_SOURCE_DIR"
                 mkdir -p $stage
                 chmod +x runConfigureICU configure install-sh
                 # HACK: Break format layout so boost can find the library.
-#                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/release
                 ./runConfigureICU Linux $common_options --libdir=${stage}/lib/
 
                 make -j2
                 make install
-                # Disable debug build until we can build boost with our standard layout.
-#                ./runConfigureICU Linux $common_options --libdir=${stage}/lib/debug \
-#                    --enable-debug=yes --enable-release=no
-#                make -j2
-#                make install
             popd
 
             # populate version_file

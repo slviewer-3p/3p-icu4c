@@ -70,8 +70,6 @@
             <string>lib/libicutest.a</string>
             <string>lib/libicutu.a</string>
             <string>lib/libicuuc.a</string>
-            <string>lib/debug/*.a</string>
-            <string>lib/release/*.a</string>
           </array>
           <key>name</key>
           <string>darwin</string>
@@ -96,8 +94,6 @@
           <key>manifest</key>
           <array>
             <string>lib/*.a</string>
-            <string>lib/release/*.a</string>
-            <string>lib/debug/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
