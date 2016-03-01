@@ -28,7 +28,7 @@ set -x
 stage=$(pwd)/stage
 pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
-        "windows")
+        windows*)
             load_vsvars
 
             # According to the icu build instructions for Windows,
@@ -36,8 +36,7 @@ pushd "$ICU4C_SOURCE_DIR"
             # just use the provided .sln file.
 
             pushd ../icu/source
-                build_sln "allinone\allinone.sln" "Release|Win32"
-                build_sln "allinone\allinone.sln" "Debug|Win32"
+                build_sln "allinone\allinone.sln" "Release|$AUTOBUILD_WIN_VSPLATFORM"
             popd
 
             mkdir -p "$stage/lib"
@@ -47,12 +46,11 @@ pushd "$ICU4C_SOURCE_DIR"
             # ICU in the lib/release and lib/debug directories.
 
             # Copy the .lib files that don't have a "d" on the end to release
-            find ./lib -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
-            # Copy the .lib files and .pdb files ending in "d" to debug
-
-            find ./lib -regex '.*/icu.*d\.lib' -exec cp {} $stage/lib/ \;
-            find ./lib -regex '.*/icu.*d\.pdb' -exec cp {} $stage/lib/ \;
-
+            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
+            then bitdir=./lib
+            else bitdir=./lib64
+            fi
+            find $bitdir -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
 
             cp -R include/* "$stage/include"
 
@@ -64,7 +62,6 @@ pushd "$ICU4C_SOURCE_DIR"
                "$(cygpath -w "$top/version.c")"
             "$stage/version.exe" > "$stage/version.txt"
             rm "$stage"/version.{obj,exe}
-
         ;;
         "darwin")
             pushd "source"
