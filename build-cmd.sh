@@ -7,6 +7,8 @@ top="$(pwd)"
 set -x
 # make errors fatal
 set -e
+# complain about undefined variables
+set -u
 
 ICU4C_SOURCE_DIR="icu"
 VERSION_HEADER_FILE="$ICU4C_SOURCE_DIR/source/common/unicode/uvernum.h"
@@ -17,15 +19,20 @@ if [ -z "$AUTOBUILD" ] ; then
 fi
 
 if [ "$OSTYPE" = "cygwin" ] ; then
-    export AUTOBUILD="$(cygpath -u $AUTOBUILD)"
+    autobuild="$(cygpath -u $AUTOBUILD)"
+else
+    autobuild="$AUTOBUILD"
 fi
 
 # load autobuild provided shell functions and variables
 set +x
-eval "$("$AUTOBUILD" source_environment)"
+eval "$("$autobuild" source_environment)"
 set -x
 
-stage=$(pwd)/stage
+# pull in LL_BUILD with platform-specific compiler switches
+set_build_variables convenience Release
+
+stage="$(pwd)/stage"
 pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         windows*)
@@ -42,15 +49,11 @@ pushd "$ICU4C_SOURCE_DIR"
             mkdir -p "$stage/lib"
             mkdir -p "$stage/include"
 
-            # Break package layout convention until we have a way of finding
-            # ICU in the lib/release and lib/debug directories.
-
-            # Copy the .lib files that don't have a "d" on the end to release
             if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
             then bitdir=./lib
             else bitdir=./lib64
             fi
-            find $bitdir -regex '.*/icu.*[^d]\.lib' -exec cp {} $stage/lib/ \;
+            find $bitdir -name 'icu*.lib' -print -exec cp {} $stage/lib/ \;
 
             cp -R include/* "$stage/include"
 
@@ -63,11 +66,10 @@ pushd "$ICU4C_SOURCE_DIR"
             "$stage/version.exe" > "$stage/version.txt"
             rm "$stage"/version.{obj,exe}
         ;;
-        "darwin")
+        darwin*)
             pushd "source"
 
-                sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
-                opts='-arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.7 -DU_CHARSET_IS_UTF8=1'
+                opts='-arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD -DU_CHARSET_IS_UTF8=1'
                 export CFLAGS="$opts"
                 export CXXFLAGS="$opts"
                 export LDFLAGS="$opts"
@@ -90,12 +92,12 @@ pushd "$ICU4C_SOURCE_DIR"
             "$stage/version" > "$stage/version.txt"
             rm "$stage/version"
         ;;
-        "linux")
+        linux*)
             pushd "source"
                 ## export CC="gcc-4.1"
                 ## export CXX="g++-4.1"
-                export CFLAGS="-m32"
-                export CXXFLAGS=$CFLAGS
+                export CFLAGS="-m$AUTOBUILD_ADDRSIZE $LL_BUILD"
+                export CXXFLAGS="$CFLAGS"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
                     --enable-samples=no --enable-tests=no --enable-layout=no"
