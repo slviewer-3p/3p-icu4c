@@ -69,7 +69,7 @@ pushd "$ICU4C_SOURCE_DIR"
         darwin*)
             pushd "source"
 
-                opts='-arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD -DU_CHARSET_IS_UTF8=1'
+                opts="-arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD -DU_CHARSET_IS_UTF8=1"
                 export CFLAGS="$opts"
                 export CXXFLAGS="$opts"
                 export LDFLAGS="$opts"
