@@ -53,7 +53,8 @@ pushd "$ICU4C_SOURCE_DIR"
             then bitdir=./lib
             else bitdir=./lib64
             fi
-            find $bitdir -name 'icu*.lib' -print -exec cp {} $stage/lib/ \;
+            # avoid confusion with Windows find.exe, SIGH
+            /usr/bin/find $bitdir -name 'icu*.lib' -print -exec cp {} $stage/lib/ \;
 
             cp -R include/* "$stage/include"
 
