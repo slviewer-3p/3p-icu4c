@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cd "$(dirname "$0")"
 top="$(pwd)"
 
 # turn on verbose debugging output for parabuild logs.
-set -x
+exec 4>&1; export BASH_XTRACEFD=4; set -x
 # make errors fatal
 set -e
 # complain about undefined variables
@@ -15,7 +15,7 @@ VERSION_HEADER_FILE="$ICU4C_SOURCE_DIR/source/common/unicode/uvernum.h"
 VERSION_MACRO="U_ICU_VERSION"
 
 if [ -z "$AUTOBUILD" ] ; then
-    fail
+    exit 1
 fi
 
 if [ "$OSTYPE" = "cygwin" ] ; then
@@ -25,12 +25,9 @@ else
 fi
 
 # load autobuild provided shell functions and variables
-set +x
-eval "$("$autobuild" source_environment)"
-set -x
-
-# pull in LL_BUILD with platform-specific compiler switches
-set_build_variables convenience Release
+source_environment_tempfile="$stage/source_environment.sh"
+"$autobuild" source_environment > "$source_environment_tempfile"
+. "$source_environment_tempfile"
 
 stage="$(pwd)/stage"
 pushd "$ICU4C_SOURCE_DIR"
@@ -70,7 +67,7 @@ pushd "$ICU4C_SOURCE_DIR"
         darwin*)
             pushd "source"
 
-                opts="-arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD -DU_CHARSET_IS_UTF8=1"
+                opts="-arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD_RELEASE -DU_CHARSET_IS_UTF8=1"
                 export CFLAGS="$opts"
                 export CXXFLAGS="$opts"
                 export LDFLAGS="$opts"
@@ -97,7 +94,7 @@ pushd "$ICU4C_SOURCE_DIR"
             pushd "source"
                 ## export CC="gcc-4.1"
                 ## export CXX="g++-4.1"
-                export CFLAGS="-m$AUTOBUILD_ADDRSIZE $LL_BUILD"
+                export CFLAGS="-m$AUTOBUILD_ADDRSIZE $LL_BUILD_RELEASE"
                 export CXXFLAGS="$CFLAGS"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
@@ -123,5 +120,3 @@ pushd "$ICU4C_SOURCE_DIR"
 	sed -e 's/<[^>][^>]*>//g' -e '/^ *$/d' license.html >"$stage/LICENSES/icu.txt"
 	cp unicode-license.txt "$stage/LICENSES/"
 popd
-
-pass
