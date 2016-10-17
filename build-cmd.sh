@@ -24,12 +24,13 @@ else
     autobuild="$AUTOBUILD"
 fi
 
+stage="$(pwd)/stage"
+
 # load autobuild provided shell functions and variables
 source_environment_tempfile="$stage/source_environment.sh"
 "$autobuild" source_environment > "$source_environment_tempfile"
 . "$source_environment_tempfile"
 
-stage="$(pwd)/stage"
 pushd "$ICU4C_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         windows*)
