@@ -60,10 +60,6 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
 print(':'.join(d for d in sys.argv[1].split(':')
 if not any(frag in d for frag in ('CommonExtensions', 'VSPerfCollectionTools', 'Team Tools'))))" "$PATH")"
 
-            python -c "print(' PATH '.center(72, '='))"
-            cygpath -p -m "$PATH" | tr ';' '\n'
-            python -c "print(' ${#PATH} chars in PATH '.center(72, '='))"
-
             which nmake
 
             # According to the icu build instructions for Windows,
@@ -82,6 +78,10 @@ if not any(frag in d for frag in ('CommonExtensions', 'VSPerfCollectionTools', '
             else bitdir=./lib64
             fi
             # avoid confusion with Windows find.exe, SIGH
+            # /usr/bin/find: The environment is too large for exec().
+            INCLUDE='' \
+            LIB='' \
+            LIBPATH='' \
             /usr/bin/find $bitdir -name 'icu*.lib' -print -exec cp {} $stage/lib/ \;
 
             cp -R include/* "$stage/include"
