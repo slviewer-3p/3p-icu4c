@@ -79,6 +79,9 @@ if not any(frag in d for frag in ('CommonExtensions', 'VSPerfCollectionTools', '
             fi
             # avoid confusion with Windows find.exe, SIGH
             # /usr/bin/find: The environment is too large for exec().
+            while read var
+            do unset $var
+            done < <(compgen -v | grep '^LL_BUILD_' | grep -v '^LL_BUILD_RELEASE$')
             INCLUDE='' \
             LIB='' \
             LIBPATH='' \
