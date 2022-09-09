@@ -138,7 +138,7 @@ if not any(frag in d for frag in ('CommonExtensions', 'VSPerfCollectionTools', '
                 # HACK: Break format layout so boost can find the library.
                 ./runConfigureICU Linux $common_options --libdir=${stage}/lib/
 
-                make -j2
+                make -j `nproc`
                 make install
             popd
 
