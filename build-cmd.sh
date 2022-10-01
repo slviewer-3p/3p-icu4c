@@ -128,7 +128,7 @@ if not any(frag in d for frag in ('CommonExtensions', 'VSPerfCollectionTools', '
             pushd "source"
                 ## export CC="gcc-4.1"
                 ## export CXX="g++-4.1"
-                export CFLAGS="-m$AUTOBUILD_ADDRSIZE $LL_BUILD_RELEASE"
+                export CFLAGS="${AUTOBUILD_GCC_ARCH} $LL_BUILD_RELEASE"
                 export CXXFLAGS="$CFLAGS"
                 export common_options="--prefix=${stage} --enable-shared=no \
                     --enable-static=yes --disable-dyload --enable-extras=no \
